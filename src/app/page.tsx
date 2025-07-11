@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, MessageCircle, Users, Zap, Globe } from "lucide-react";
+import { redirect } from "next/dist/client/components/navigation";
+import { getSession } from "@/lib/auth-client";
 
 export default function LandingPage() {
   return (
@@ -27,7 +29,8 @@ export default function LandingPage() {
           </div>
           <Button
             variant="ghost"
-            className="bg-white/20 backdrop-blur-sm hover:bg-white/30 border border-white/30"
+            className="bg-white/20 backdrop-blur-sm hover:bg-white/30 border border-white/30 hover:cursor-pointer transition-300 hover:scale-105"
+            onClick={() => redirect("/login")}
           >
             Sign In
           </Button>
@@ -55,7 +58,6 @@ export default function LandingPage() {
                   ChatZone
                 </span>
               </h1>
-
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-700 leading-tight">
                 Experience{" "}
                 <span className="bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent">
@@ -63,7 +65,6 @@ export default function LandingPage() {
                 </span>{" "}
                 communication
               </h2>
-
               <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 The ultimate platform for{" "}
                 <span className="font-semibold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
@@ -72,6 +73,12 @@ export default function LandingPage() {
                 and collaboration. Connect with friends, collaborate with
                 colleagues, and build communities.
               </p>
+              <span className="font-semibold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
+                Free Forever
+              </span>{" "}
+              <span className="font-semibold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
+                No Ads
+              </span>{" "}
             </div>
 
             {/* CTA Buttons */}
@@ -114,6 +121,7 @@ export default function LandingPage() {
         <footer className="p-6 text-center">
           <p className="text-gray-500 text-sm">
             Trusted by teams worldwide • Free forever • No credit card required
+            • Created with ❤️ by Caleb Krainman
           </p>
         </footer>
       </div>
