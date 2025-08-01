@@ -1,12 +1,28 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, MessageCircle, Users, Zap, Globe } from "lucide-react";
-import { redirect } from "next/dist/client/components/navigation";
-import { getSession } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
+import { ArrowRight, Globe, MessageCircle, Users, Zap } from "lucide-react";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function LandingPage() {
+async function signOut() {
+  "use server";
+  console.log("Clicked");
+  await auth.api.signOut({
+    headers: await headers(),
+  });
+  redirect("/");
+}
+
+async function signIn() {
+  "use server";
+  redirect("/login");
+}
+
+export default async function LandingPage() {
+  const session = await getSession();
+  console.log(session);
   return (
     <div className="min-h-screen w-full bg-gradient-to-br relative overflow-hidden">
       {/* Background Elements */}
@@ -26,14 +42,18 @@ export default function LandingPage() {
             <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               ChatZone
             </span>
+            <h1>Hello! {session && session.user.name}</h1>
           </div>
-          <Button
-            variant="ghost"
-            className="bg-white/20 backdrop-blur-sm hover:bg-white/30 border border-white/30 hover:cursor-pointer transition-300 hover:scale-105"
-            onClick={() => redirect("/login")}
-          >
-            Sign In
-          </Button>
+          {!session && (
+            <form action={signIn}>
+              <Button type="submit">Sign In</Button>
+            </form>
+          )}
+          {session && (
+            <form action={signOut}>
+              <Button type="submit">Sign Out</Button>
+            </form>
+          )}
         </header>
 
         {/* Main Content */}
@@ -119,6 +139,9 @@ export default function LandingPage() {
 
         {/* Footer */}
         <footer className="p-6 text-center">
+          <p className="text-gray-500 text-sm">
+            In Loving Memory of Michael Sellars: Beloved Brother and Uncle
+          </p>
           <p className="text-gray-500 text-sm">
             Trusted by teams worldwide • Free forever • No credit card required
             • Created with ❤️ by Caleb Krainman

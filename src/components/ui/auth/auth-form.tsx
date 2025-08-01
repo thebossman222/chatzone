@@ -25,6 +25,9 @@ import {
   FormMessage,
 } from "../form";
 
+import { useRouter } from "next/navigation";
+import { Session } from "better-auth";
+
 const signInSchema = z.object({
   email: z.string().email(),
   password: z
@@ -63,9 +66,14 @@ const signUpSchema = z
 type SignInData = z.infer<typeof signInSchema>;
 type SignUpData = z.infer<typeof signUpSchema>;
 
-export function AuthForm({ className, ...props }: React.ComponentProps<"div">) {
+export function AuthForm({
+  className,
+  session,
+  ...props
+}: React.ComponentProps<"div"> & { session?: Session }) {
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const currentSchema = isSigningUp ? signUpSchema : signInSchema;
   const form = useForm<SignUpData | SignInData>({
     resolver: zodResolver(currentSchema),
@@ -119,6 +127,7 @@ export function AuthForm({ className, ...props }: React.ComponentProps<"div">) {
         fetchOptions: {
           onSuccess: () => {
             toast.success(`You have successfully signed in`);
+            router.push("/dashboard");
           },
           onResponse: () => {
             setLoading(false);
@@ -149,7 +158,9 @@ export function AuthForm({ className, ...props }: React.ComponentProps<"div">) {
       await onSubmitSignIn(values as SignInData);
     }
   }
-
+  if (session) {
+    router.push("/dashboard");
+  }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>

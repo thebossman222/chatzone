@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -10,28 +9,53 @@ datasource db {
 }
 
 model Post {
-  id        String   @id @default(uuid())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  authorId  String
-  User      User    @relation(fields: [authorId], references: [id])
+  id         String   @id @default(uuid())
+  content    String?
+  postedDate DateTime @default(now())
+  authorId   String
+  user       User     @relation(fields: [authorId], references: [id])
+  channelId  String
+  channel    Channel  @relation(fields: [channelId], references: [id])
+
+  @@map("post")
+}
+
+model Channel {
+  id       String @id @default(uuid())
+  posts    Post[]
+  name     String
+  serverId String
+  server   Server @relation(fields: [serverId], references: [id])
+
+  @@unique([serverId, name])
+  @@map("channel")
+}
+
+model Server {
+  id       String    @id @default(uuid())
+  channels Channel[]
+  name     String
+  members  User[]
+
+  @@map("server")
 }
 
 model User {
-  id            String       @id @default(uuid())
-  email         String    
+  id            String    @id @default(uuid())
+  email         String
   name          String?
-  Post          Post[]
+  posts         Post[]
   emailVerified Boolean
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
+  role          Role      @default(USER)
   sessions      Session[]
   accounts      Account[]
+  server        Server[]
 
-  @@map("user")
   @@unique([email])
+  @@map("user")
 }
 
 enum Role {
@@ -42,12 +66,12 @@ enum Role {
 model Session {
   id        String   @id @default(uuid())
   expiresAt DateTime
-  token     String 
+  token     String
   createdAt DateTime
   updatedAt DateTime
   ipAddress String?
   userAgent String?
-  userId    String   
+  userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
@@ -55,10 +79,10 @@ model Session {
 }
 
 model Account {
-  id                    String    @id @default(uuid()) 
+  id                    String    @id @default(uuid())
   accountId             String    @unique
   providerId            String
-  userId                String    
+  userId                String
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
