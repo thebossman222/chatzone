@@ -1,8 +1,8 @@
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export async function GET(): Promise<NextResponse> {
   const session = await getSession();
   if (!session) {
     return NextResponse.json(
@@ -12,7 +12,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
   try {
     const servers = await prisma.server.findMany({});
-    return NextResponse.json({ servers }, { status: 200 });
+    return NextResponse.json(servers, { status: 200 });
   } catch (error) {
     const message =
       error instanceof Error

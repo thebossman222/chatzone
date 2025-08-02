@@ -38,7 +38,9 @@ export default function RootLayout({
           defer
         />
         <Toaster />
-        <AuroraBackground children={children} showRadialGradient={true} />
+        <AuroraBackground showRadialGradient={true}>
+          {children}
+        </AuroraBackground>
       </body>
     </html>
   );

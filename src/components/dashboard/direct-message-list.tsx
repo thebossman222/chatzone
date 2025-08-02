@@ -1,7 +1,7 @@
-import { MessageCircle } from "lucide-react";
-import { ScrollArea } from "../ui/scroll-area";
 import { dmContacts } from "@/app/dashboard/mockdata";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { MessageCircle } from "lucide-react";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { ScrollArea } from "../ui/scroll-area";
 
 export function MessageList() {
   <div className="flex-1 p-4">
@@ -18,7 +18,6 @@ export function MessageList() {
           >
             <div className="relative">
               <Avatar className="w-8 h-8">
-                <AvatarImage src={contact.avatar || "/placeholder.svg"} />
                 <AvatarFallback>{contact.name[0]}</AvatarFallback>
               </Avatar>
               <div

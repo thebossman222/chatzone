@@ -1,6 +1,3 @@
-import { Badge } from "@/components/ui/badge";
-import { Globe, Users, Zap } from "lucide-react";
-
 export default function ComingSoon() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br relative overflow-hidden flex flex-col">

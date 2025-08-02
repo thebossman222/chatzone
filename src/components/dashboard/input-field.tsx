@@ -1,29 +1,22 @@
-"use Client";
+"use client";
 
-import { Form, FormField, FormItem, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
+import { postMessage } from "@/lib/messages";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { SmilePlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { messages } from "@/app/dashboard/mockdata";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { toast } from "sonner";
-import { Session } from "better-auth";
-import { POST } from "@/lib/messages";
+import z from "zod";
+import { Form, FormField, FormItem, FormMessage } from "../ui/form";
+import { Input } from "../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
-export function MessageInput({
-  session,
-  channelId,
-}: {
-  session?: Session | null;
-  channelId: string;
-}) {
+export function MessageInput({ channelId }: { channelId: string }) {
   const formSchema = z.object({
     message: z
       .string()
-      .min(5, `Message must be at least 5 characters long`)
-      .max(56, `Message must be at most 56 characters`),
+      .min(1, `Message cannot be empty`)
+      .max(56, `Message must be at most 56 characters`)
+      .trim(),
   });
 
   type schemaType = z.infer<typeof formSchema>;
@@ -37,10 +30,11 @@ export function MessageInput({
 
   async function onSubmit(formData: schemaType) {
     try {
-      const res = await POST({
+      const res = await postMessage({
         content: formData.message,
         channelId: channelId,
       });
+      form.reset();
       toast.success(`Message Posted! ${res.newMessage.content}`);
     } catch (error) {
       if (error instanceof Error) {

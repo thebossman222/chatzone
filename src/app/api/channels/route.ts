@@ -23,7 +23,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       where: { serverId },
       orderBy: { name: "desc" },
     });
-    return NextResponse.json({ channels }, { status: 200 });
+    return NextResponse.json(channels, { status: 200 });
   } catch (error) {
     const message =
       error instanceof Error

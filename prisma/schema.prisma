@@ -13,6 +13,7 @@ model Post {
   content    String?
   postedDate DateTime @default(now())
   authorId   String
+  authorName String
   user       User     @relation(fields: [authorId], references: [id])
   channelId  String
   channel    Channel  @relation(fields: [channelId], references: [id])

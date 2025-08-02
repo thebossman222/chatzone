@@ -22,7 +22,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       orderBy: { postedDate: "asc" },
     });
 
-    return NextResponse.json({ messages }, { status: 200 });
+    return NextResponse.json(messages, { status: 200 });
   } catch (error) {
     const message =
       error instanceof Error
@@ -53,6 +53,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         content,
         channelId,
         authorId: session.user.id,
+        authorName: session.user.name || "Anonymous",
       },
     });
     return NextResponse.json({ newMessage }, { status: 201 });

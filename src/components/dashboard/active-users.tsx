@@ -19,7 +19,7 @@ export function ActiveUserSection() {
             >
               <div className="relative">
                 <Avatar className="w-8 h-8">
-                  <AvatarImage src={user.avatar || "/placeholder.svg"} />
+                  <AvatarImage src={user.avatar} />
                   <AvatarFallback>{user.name[0]}</AvatarFallback>
                 </Avatar>
                 <div
