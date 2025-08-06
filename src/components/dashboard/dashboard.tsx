@@ -44,6 +44,14 @@ export function Dashboard() {
       }
     };
     fetchChannels();
+
+    // Set the interval to refresh every 10 seconds
+    const interval = setInterval(() => {
+      fetchChannels();
+    }, 10000);
+
+    // Cleanup on unmount or when selectedServer changes
+    return () => clearInterval(interval);
   }, [selectedServer]);
 
   return (
@@ -102,7 +110,9 @@ export function Dashboard() {
       </div>
 
       {/* Main Chat Area */}
-      <MainChatArea selectedChannel={selectedChannel} />
+      <MainChatArea
+        selectedChannel={selectedChannel ? selectedChannel : channels[0]}
+      />
 
       {/* Right Sidebar - Active Users */}
       <ActiveUserSection />

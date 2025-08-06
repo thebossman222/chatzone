@@ -12,7 +12,7 @@ import { MessageInput } from "./input-field";
 export function MainChatArea({
   selectedChannel,
 }: {
-  selectedChannel: Channel | null;
+  selectedChannel: Channel;
 }) {
   const [messages, setMessages] = useState<Post[]>([]);
   useEffect(() => {
@@ -28,6 +28,12 @@ export function MainChatArea({
       }
     };
     fetchMessages();
+
+    const interval = setInterval(() => {
+      fetchMessages();
+    }, 2000);
+
+    return () => clearInterval(interval);
   }, [selectedChannel]);
 
   return (
