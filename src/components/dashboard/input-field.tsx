@@ -9,8 +9,15 @@ import z from "zod";
 import { Form, FormField, FormItem, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Socket } from "socket.io-client";
 
-export function MessageInput({ channelId }: { channelId: string }) {
+export function MessageInput({
+  channelId,
+  socket,
+}: {
+  channelId: string;
+  socket: Socket;
+}) {
   const formSchema = z.object({
     message: z
       .string()
@@ -34,6 +41,7 @@ export function MessageInput({ channelId }: { channelId: string }) {
         content: formData.message,
         channelId: channelId,
       });
+      socket.emit("new message", formData.message, "");
       form.reset();
       toast.success(`Message Posted! ${res.newMessage.content}`);
     } catch (error) {

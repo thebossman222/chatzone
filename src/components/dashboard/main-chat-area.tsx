@@ -8,11 +8,17 @@ import { Badge } from "../ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ScrollArea } from "../ui/scroll-area";
 import { MessageInput } from "./input-field";
+import { Socket } from "socket.io-client";
 
+type ChatType = {
+  content: string;
+};
 export function MainChatArea({
   selectedChannel,
+  socket,
 }: {
   selectedChannel: Channel;
+  socket: Socket;
 }) {
   const [messages, setMessages] = useState<Post[]>([]);
   useEffect(() => {
@@ -28,13 +34,18 @@ export function MainChatArea({
       }
     };
     fetchMessages();
-
-    const interval = setInterval(() => {
-      fetchMessages();
-    }, 2000);
-
-    return () => clearInterval(interval);
   }, [selectedChannel]);
+
+  useEffect(() => {
+    socket.on(`chat message`, (msg) => {
+      messages.push({
+        id: crypto.randomUUID(),
+        content: msg.content,
+        authorName: "Anonymous",
+        postedDate: new Date().toISOString(),
+      });
+    });
+  }, [socket]);
 
   return (
     <div className="flex-1 flex flex-col bg-white/10 backdrop-blur-sm">
@@ -94,7 +105,7 @@ export function MainChatArea({
       </ScrollArea>
 
       {/* Message Input */}
-      <MessageInput channelId={selectedChannel?.id || ""} />
+      <MessageInput channelId={selectedChannel?.id || ""} socket={socket} />
     </div>
   );
 }

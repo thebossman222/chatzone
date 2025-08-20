@@ -7,12 +7,22 @@ import { useEffect, useState } from "react";
 import { Channel, Server } from "../../../generated/prisma";
 import { ActiveUserSection } from "./active-users";
 import { MainChatArea } from "./main-chat-area";
+import { io, Socket } from "socket.io-client";
 
 export function Dashboard() {
   const [servers, setServers] = useState<Server[]>([]);
   const [channels, setChannels] = useState<Channel[]>([]);
   const [selectedServer, setSelectedServer] = useState<Server | null>(null);
   const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
+
+  useEffect(() => {
+    const newSocket = io(`http://localhost:3001`, {});
+    setSocket(newSocket);
+    return () => {
+      socket?.disconnect();
+    };
+  }, [selectedChannel]);
 
   useEffect(() => {
     const fetchServers = async () => {
@@ -112,6 +122,7 @@ export function Dashboard() {
       {/* Main Chat Area */}
       <MainChatArea
         selectedChannel={selectedChannel ? selectedChannel : channels[0]}
+        socket={socket ? socket : io()}
       />
 
       {/* Right Sidebar - Active Users */}
