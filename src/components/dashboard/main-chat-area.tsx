@@ -2,13 +2,13 @@
 import { getMessages } from "@/lib/messages";
 import { Hash } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Socket } from "socket.io-client";
 import { Channel, Post } from "../../../generated/prisma";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ScrollArea } from "../ui/scroll-area";
 import { MessageInput } from "./input-field";
-import { Socket } from "socket.io-client";
 
 type ChatType = {
   content: string;
@@ -21,6 +21,15 @@ export function MainChatArea({
   socket: Socket;
 }) {
   const [messages, setMessages] = useState<Post[]>([]);
+  /**
+   *
+   * @returns A promise that resolves to an array of messages for the selected channel
+   * Fetches messages for the selected channel and updates the state
+   * if no channel is selected, it returns early
+   * If fetching messages fails, it logs an error to the console
+   * The function is called whenever the selectedChannel changes
+   *
+   */
   useEffect(() => {
     const fetchMessages = async () => {
       if (!selectedChannel) {
@@ -29,6 +38,7 @@ export function MainChatArea({
       try {
         const res = await getMessages({ channelId: selectedChannel.id });
         setMessages(res);
+        return res;
       } catch (error) {
         console.error("Failed to fetch messages", error);
       }
@@ -36,15 +46,25 @@ export function MainChatArea({
     fetchMessages();
   }, [selectedChannel]);
 
+  /**
+   * Sets up a WebSocket listener for incoming chat messages
+   * When a new message is received, it appends the message to the existing list of messages in the state
+   * Cleans up the listener when the component is unmounted or when the socket changes
+   * The effect depends on the socket instance
+   * If the socket is not available, the effect does nothing
+   * The listener listens for the 'chat message' event
+   * The new message is expected to be of type Post
+   * The messages state is updated using the functional form of setState to ensure the latest state is used
+   * This effect ensures that the chat interface stays updated in real-time as new messages arrive
+   * It is important for real-time communication applications
+   */
   useEffect(() => {
-    socket.on(`chat message`, (msg) => {
-      messages.push({
-        id: crypto.randomUUID(),
-        content: msg.content,
-        authorName: "Anonymous",
-        postedDate: new Date().toISOString(),
-      });
+    socket.on("chat message", (msg: Post) => {
+      setMessages((prev) => [...prev, msg]);
     });
+    return () => {
+      socket.off(`chat message`);
+    };
   }, [socket]);
 
   return (

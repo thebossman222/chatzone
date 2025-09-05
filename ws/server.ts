@@ -1,5 +1,6 @@
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
+import { Post } from "../generated/prisma";
 
 const server = createServer();
 const io = new Server(server, {
@@ -12,13 +13,12 @@ const io = new Server(server, {
 io.on(`connection`, async (socket: Socket) => {
   socket.on(`join`, (channelId) => {
     socket.join(channelId);
-    io.to(channelId).emit(`user joined`, socket.id);
+    console.log(`User ${socket.id} joined channel ${channelId}`);
   });
 
-  socket.on(`chat message`, (msg, channelId) => {
-    io.to(channelId).emit(`chat message`, {
-      content: msg,
-    });
+  socket.on(`chat message`, (msg: Post) => {
+    io.to(msg.channelId).emit(`chat message`, msg);
+    console.log(`Message received: ${msg.content} in channel ${msg.channelId}`);
   });
 
   socket.on(`disconnect`, () => {

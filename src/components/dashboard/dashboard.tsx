@@ -4,44 +4,72 @@ import { getChannels } from "@/lib/channels";
 import { getServers } from "@/lib/servers";
 import { Hash } from "lucide-react";
 import { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
 import { Channel, Server } from "../../../generated/prisma";
 import { ActiveUserSection } from "./active-users";
 import { MainChatArea } from "./main-chat-area";
-import { io, Socket } from "socket.io-client";
 
 export function Dashboard() {
   const [servers, setServers] = useState<Server[]>([]);
   const [channels, setChannels] = useState<Channel[]>([]);
   const [selectedServer, setSelectedServer] = useState<Server | null>(null);
   const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const [socket, setSocket] = useState<Socket>();
 
+  /**
+   * Establishes a WebSocket connection to the server
+   * The connection is made to 'http://localhost:3001'
+   * The socket instance is stored in the component's state
+   * The connection is re-established whenever the selectedChannel changes
+   * Cleans up the connection when the component is unmounted or when selectedChannel changes
+   * If there is an existing socket connection, it is disconnected before creating a new one
+   * This ensures that there is only one active connection at a time
+   * The effect depends on the selectedChannel state
+   */
   useEffect(() => {
     const newSocket = io(`http://localhost:3001`, {});
     setSocket(newSocket);
     return () => {
-      socket?.disconnect();
+      newSocket.disconnect();
     };
-  }, [selectedChannel]);
+  }, []);
 
   useEffect(() => {
-    const fetchServers = async () => {
+    if (socket && selectedChannel) {
+      socket.emit("join", selectedChannel.id);
+    }
+  }, [socket, selectedChannel]);
+  /**
+   * Fetches the list of servers from the backend
+   * The fetched servers are stored in the component's state
+   * If there is no selected server and the fetched list is not empty,
+   */
+  useEffect(() => {
+    async function fetchServers() {
       try {
         const res = await getServers();
-
         setServers(res);
         if (selectedServer === null && res.length > 0) {
           setSelectedServer(res[0]);
         }
+        return res;
       } catch (error) {
         console.error("Failed to fetch servers", error);
       }
-    };
+    }
     fetchServers();
   }, []);
 
+  /**
+   * Fetches the list of channels for the selected server
+   * The fetched channels are stored in the component's state
+   * If there is a selected server, it fetches the channels for that server
+   * If there is no selected server, it returns early
+   * If fetching channels fails, it logs an error to the console
+   * The function is called whenever the selectedServer changes
+   */
   useEffect(() => {
-    const fetchChannels = async () => {
+    async function fetchChannels() {
       if (!selectedServer) {
         return;
       }
@@ -49,19 +77,12 @@ export function Dashboard() {
         const res = await getChannels({ serverId: selectedServer.id });
         setChannels(res);
         setSelectedChannel(res[0]);
+        return res;
       } catch (error) {
         console.error("Failed to fetch channels", error);
       }
-    };
+    }
     fetchChannels();
-
-    // Set the interval to refresh every 10 seconds
-    const interval = setInterval(() => {
-      fetchChannels();
-    }, 10000);
-
-    // Cleanup on unmount or when selectedServer changes
-    return () => clearInterval(interval);
   }, [selectedServer]);
 
   return (
@@ -120,10 +141,13 @@ export function Dashboard() {
       </div>
 
       {/* Main Chat Area */}
-      <MainChatArea
-        selectedChannel={selectedChannel ? selectedChannel : channels[0]}
-        socket={socket ? socket : io()}
-      />
+      {socket && selectedChannel ? (
+        <MainChatArea selectedChannel={selectedChannel} socket={socket} />
+      ) : (
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-gray-600">Loading chat…</p>
+        </div>
+      )}
 
       {/* Right Sidebar - Active Users */}
       <ActiveUserSection />

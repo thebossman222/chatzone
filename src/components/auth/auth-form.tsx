@@ -1,5 +1,4 @@
 "use client";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,13 +8,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { signIn, signUp } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { GithubIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn, signUp } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -23,11 +23,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../form";
+} from "../ui/form";
 
-import { useRouter } from "next/navigation";
 import { Session } from "better-auth";
+import { useRouter } from "next/navigation";
 
+/**
+ * Zod schema for sign-in form validation
+ */
 const signInSchema = z.object({
   email: z.string().email(),
   password: z
@@ -36,6 +39,10 @@ const signInSchema = z.object({
     .max(128, `Password must be at most 128 characters`),
 });
 
+/**
+ * Zod schema for sign-up form validation
+ * Includes custom validation to ensure passwords match
+ * */
 const signUpSchema = z
   .object({
     email: z.string().email(),
@@ -63,6 +70,9 @@ const signUpSchema = z
     }
   });
 
+/**
+ * Types for form data inferred from Zod schemas
+ */
 type SignInData = z.infer<typeof signInSchema>;
 type SignUpData = z.infer<typeof signUpSchema>;
 
@@ -71,6 +81,14 @@ export function AuthForm({
   session,
   ...props
 }: React.ComponentProps<"div"> & { session?: Session }) {
+  /**
+   * State to toggle between sign-in and sign-up modes
+   * Also manages loading state during form submission
+   * Uses react-hook-form for form state management and validation
+   * Handles form submission for both sign-in and sign-up with appropriate feedback using toast notifications
+   * Redirects to dashboard upon successful sign-in
+   * If a session already exists, redirects to dashboard immediately
+   */
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();

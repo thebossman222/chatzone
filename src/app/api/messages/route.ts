@@ -40,6 +40,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { status: 401 }
     );
   }
+
   const body = await request.json();
   const { content, channelId } = body;
 
@@ -56,6 +57,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         authorName: session.user.name || "Anonymous",
       },
     });
+
     return NextResponse.json({ newMessage }, { status: 201 });
   } catch (error) {
     const message =

@@ -1,7 +1,10 @@
-import { AuthForm } from "@/components/ui/auth/auth-form";
+import { AuthForm } from "@/components/auth/auth-form";
 import { getSession } from "@/lib/session";
 
 export default async function LoginPage() {
+  /**
+   * Renders the login page
+   */
   const session = await getSession();
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 w-full">

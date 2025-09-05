@@ -4,12 +4,12 @@ import { postMessage } from "@/lib/messages";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SmilePlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { Socket } from "socket.io-client";
 import { toast } from "sonner";
 import z from "zod";
 import { Form, FormField, FormItem, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Socket } from "socket.io-client";
 
 export function MessageInput({
   channelId,
@@ -41,8 +41,8 @@ export function MessageInput({
         content: formData.message,
         channelId: channelId,
       });
-      socket.emit("new message", formData.message, "");
       form.reset();
+      socket.emit("chat message", res.newMessage);
       toast.success(`Message Posted! ${res.newMessage.content}`);
     } catch (error) {
       if (error instanceof Error) {

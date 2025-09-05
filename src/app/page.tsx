@@ -6,6 +6,9 @@ import { ArrowRight, Globe, MessageCircle, Users, Zap } from "lucide-react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+/**
+ * Function to handle user sign out
+ */
 async function signOut() {
   "use server";
   console.log("Clicked");
@@ -15,6 +18,9 @@ async function signOut() {
   redirect("/");
 }
 
+/**
+ * Function to handle user sign in
+ */
 async function signIn() {
   "use server";
   redirect("/login");
