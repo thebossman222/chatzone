@@ -1,7 +1,14 @@
 import { activeUsers } from "@/app/dashboard/mockdata";
+import { Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ScrollArea } from "../ui/scroll-area";
-import { Users } from "lucide-react";
+
+/*
+ * Component to display a list of active users
+ * Shows user avatars, names, statuses, and current activities
+ * Uses a scrollable area to accommodate long lists of users
+ * Hidden on medium and smaller screens for better responsiveness
+ */
 
 export function ActiveUserSection() {
   return (

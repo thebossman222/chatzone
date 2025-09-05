@@ -2,6 +2,12 @@ import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 
+/*
+ * @param request - The incoming NextRequest object
+ * @returns A NextResponse containing messages or an error message
+ *
+ * Handles GET requests for channels
+ */
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const session = await getSession();
   if (!session) {

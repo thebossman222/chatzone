@@ -1,3 +1,11 @@
+/**
+ *
+ * @returns A React component representing a "Coming Soon" page
+ * This page features a modern design with gradient backgrounds and animated elements
+ * It includes a hero section with a welcome message, a brief description of the upcoming platform, and a footer with additional information
+ * The design is responsive and visually appealing, utilizing Tailwind CSS for styling
+ * The page is intended to generate excitement and anticipation for the launch of "ChatZone"
+ */
 export default function ComingSoon() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br relative overflow-hidden flex flex-col">

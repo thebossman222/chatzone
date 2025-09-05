@@ -3,6 +3,9 @@ import { MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { ScrollArea } from "../ui/scroll-area";
 
+/*
+ * Component to display a list of direct message contacts
+ */
 export function MessageList() {
   <div className="flex-1 p-4">
     <h3 className="text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">

@@ -26,6 +26,17 @@ async function signIn() {
   redirect("/login");
 }
 
+/**
+ *
+ * @returns A React component representing the landing page of the ChatZone application
+ * This page features a modern and visually appealing design with gradient backgrounds and animated elements
+ * It includes a header with the application logo and authentication buttons, a main content area with a hero section, and a footer
+ * The hero section contains a welcome message, a brief description of the platform, call-to-action buttons, and feature highlights
+ * The design is responsive and utilizes Tailwind CSS for styling
+ * The page also retrieves the current user session to display personalized content if the user is logged in
+ * The footer includes a tribute message and additional information about the platform
+ * The page is intended to attract and engage users, encouraging them to sign up and explore the features of ChatZone
+ */
 export default async function LandingPage() {
   const session = await getSession();
   console.log(session);

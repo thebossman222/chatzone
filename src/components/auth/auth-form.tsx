@@ -103,6 +103,18 @@ export function AuthForm({
     },
   });
 
+  /*
+   * Handles sign-up form submission
+   * Uses the signUp function from better-auth to create a new user
+   * Provides feedback to the user via toast notifications for success, error, and loading states
+   * Catches and handles any unexpected errors during the sign-up process
+   * Finally, it resets the loading state
+   * @param values - The form data containing email, name, password, and confirmPassword
+   * @returns void
+   * @throws Will throw an error if the sign-up process fails
+   *
+   */
+
   async function onSubmitSignUp(values: SignUpData) {
     try {
       setLoading(true);
@@ -136,6 +148,17 @@ export function AuthForm({
     }
   }
 
+  /*
+   * Handles sign-in form submission
+   * Uses the signIn function from better-auth to authenticate the user
+   * Provides feedback to the user via toast notifications for success, error, and loading states
+   * Redirects to the dashboard upon successful sign-in
+   * Catches and handles any unexpected errors during the sign-in process
+   * Finally, it resets the loading state
+   * @param values - The form data containing email and password
+   * @return void
+   * @throws Will throw an error if the sign-in process fails
+   */
   async function onSubmitSignIn(values: SignInData) {
     try {
       setLoading(true);
@@ -169,6 +192,12 @@ export function AuthForm({
     }
   }
 
+  /*
+   * Handles form submission for both sign-in and sign-up
+   * Determines the current mode (sign-in or sign-up) and calls the appropriate submission handler
+   * @param values - The form data which can be either SignInData or SignUpData
+   * @returns void
+   */
   async function onSubmit(values: SignInData | SignUpData) {
     if (isSigningUp) {
       await onSubmitSignUp(values as SignUpData);

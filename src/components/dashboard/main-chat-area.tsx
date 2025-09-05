@@ -125,7 +125,7 @@ export function MainChatArea({
       </ScrollArea>
 
       {/* Message Input */}
-      <MessageInput channelId={selectedChannel?.id || ""} socket={socket} />
+      <MessageInput channelId={selectedChannel.id} socket={socket} />
     </div>
   );
 }

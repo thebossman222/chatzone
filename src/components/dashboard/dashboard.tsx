@@ -9,6 +9,14 @@ import { Channel, Server } from "../../../generated/prisma";
 import { ActiveUserSection } from "./active-users";
 import { MainChatArea } from "./main-chat-area";
 
+/**
+ *
+ * @returns A React component representing the dashboard of a chat application
+ * The dashboard includes a list of servers, channels, and a main chat area
+ * It manages state for servers, channels, selected server/channel, and WebSocket connection
+ * It fetches servers and channels from the backend and establishes a WebSocket connection for real-time chat
+ * The layout is styled using Tailwind CSS for a modern and responsive design
+ */
 export function Dashboard() {
   const [servers, setServers] = useState<Server[]>([]);
   const [channels, setChannels] = useState<Channel[]>([]);

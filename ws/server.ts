@@ -12,7 +12,7 @@ const io = new Server(server, {
 
 io.on(`connection`, async (socket: Socket) => {
   socket.on(`join`, (channelId) => {
-    socket.join(channelId);
+    socket.join(`${channelId}`);
     console.log(`User ${socket.id} joined channel ${channelId}`);
   });
 

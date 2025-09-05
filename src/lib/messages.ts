@@ -1,3 +1,9 @@
+/*
+ * Functions to interact with the messages API
+ * Includes functions to post a new message and fetch messages for a channel
+ * Handles errors by throwing exceptions with relevant messages
+ * @module messages
+ */
 export async function postMessage(data: {
   content: string;
   channelId: string;

@@ -2,6 +2,12 @@ import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { NextResponse } from "next/server";
 
+/**
+ *
+ * @returns A NextResponse containing the list of servers or an error message
+ *
+ * Handles GET requests for servers
+ */
 export async function GET(): Promise<NextResponse> {
   const session = await getSession();
   if (!session) {

@@ -35,6 +35,17 @@ export function MessageInput({
     },
   });
 
+  /*
+   * Handles form submission to post a new message
+   * Takes formData as an argument, which contains the message to be posted
+   * Uses the postMessage function to send the message to the backend
+   * If the message is posted successfully, it resets the form, emits a 'chat message' event via the socket, and shows a success toast
+   * If there is an error during the posting process, it catches the error and shows an error toast with the appropriate message
+   * The function is asynchronous and uses try-catch for error handling
+   * @param formData - The data from the form containing the message to be posted
+   * @returns void
+   * @throws Will throw an error if the message posting fails
+   */
   async function onSubmit(formData: schemaType) {
     try {
       const res = await postMessage({
